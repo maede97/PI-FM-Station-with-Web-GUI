@@ -10,4 +10,4 @@ Edit the configuration file `config.ini`.
 
 After this, simply run `./run.sh`.
 
-PS: Don't forget to connect a jumper wire to your raspberry PI on GPIO pin 4. (refer to the [manual](https://www.raspberrypi.org/documentation/usage/gpio/))
+PS: Don't forget to connect a jumper wire to your raspberry PI on GPIO pin 4. (refer to the [manual](https://www.raspberrypi.org/documentation/usage/gpio/) and turn in with your radio at the frequency you set inside the configuration)

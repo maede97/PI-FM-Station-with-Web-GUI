@@ -9,13 +9,13 @@ PLAY_QUEUE = []
 HERTZ = "88.2"
 KILL_THREAD = False
 
+# Radio Player function
 def radio_player_func(stop):
     global PLAY_QUEUE
     global HERTZ
     global KILL_THREAD
 
     while True:
-        print("Starting loop")
         while len(PLAY_QUEUE) == 0:
             if stop():
                 return
@@ -23,7 +23,7 @@ def radio_player_func(stop):
 
         current = PLAY_QUEUE[0]
         print("Playing", current)
-        os.system(f"sudo fm_transmitter/fm_transmitter -f {HERTZ} 'uploads/{current}'")
+        os.system(f"sudo fm_transmitter/fm_transmitter -f {HERTZ} 'uploads/{current}.wav'")
         PLAY_QUEUE = PLAY_QUEUE[1:]
         os.remove(f"uploads/{current}")
 
@@ -38,8 +38,8 @@ app.config['MAX_CONTENT_LENGTH'] = 16 * 1024 * 1024 # max 16Mb
 
 app.config["SECRET_KEY"] = os.environ.get('SECRET_KEY', 'dev')
 
-THREAD = threading.Thread(target=radio_player_func, args=lambda: KILL_THREAD)
-
+# Radio Thread
+THREAD = threading.Thread(target=radio_player_func, args=(lambda: KILL_THREAD,))
 THREAD.start()
 
 def close_thread():
@@ -63,12 +63,12 @@ def checking_file():
         ext = filename.rsplit(".", 1)[1].lower()
         filename_without_ext = filename.rsplit(".", 1)[0]
         if ext == "wav":
-            PLAY_QUEUE.append(filename)
+            PLAY_QUEUE.append(filename_without_ext)
             return redirect(url_for("index_page"))
         elif ext == "mp3" or ext == "m4a":
             # convert with ffmpeg
             if os.system(f"sudo sox 'uploads/{filename}' -r 22050 -c 1 -b 16 -t wav 'uploads/{filename_without_ext}.wav'") == 0:
-                PLAY_QUEUE.append(f"{filename_without_ext}.wav")
+                PLAY_QUEUE.append(f"{filename_without_ext}")
                 return redirect(url_for("index_page"))
             else:
                 flash("An error occured")

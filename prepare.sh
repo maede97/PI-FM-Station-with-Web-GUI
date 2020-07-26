@@ -7,9 +7,8 @@ echo "Prepares the FM transmitter..."
 git submodule update --init --recursive
 
 echo "Installing dependencies"
-sudo apt install -y gunicorn ffmpeg python3-pip
-pip3 install flask
-
+sudo apt install -y gunicorn3 ffmpeg python3-pip
+sudo pip3 install flask
 
 cd fm_transmitter
 make

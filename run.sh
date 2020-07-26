@@ -2,4 +2,4 @@
 
 set -e
 
-gunicorn -b 0.0.0.0:80 app:app
+sudo gunicorn3 -b 0.0.0.0:80 app:app

@@ -1,12 +1,19 @@
 {% extends "layout.html" %}
+{% block title %}
+FM Station - Home
+{% endblock %}
 {% block body %}
   <h1>Overview</h1>
   <p>Do you want to <a href="{{ url_for('upload_file') }}">upload an audio file?</a></p>
 
+  {% if queue %}
   <p>Songs in Queue:</p>
   <ul>
   {% for q in queue %}
     <li>{{ q }}</li>
   {% endfor %}
   </ul>
+  {% else %}
+  <p>Add your own song above!</p>
+  {% endif %}
 {% endblock %}

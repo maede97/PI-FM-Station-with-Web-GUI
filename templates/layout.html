@@ -1,13 +1,27 @@
 <!doctype html>
-<title>PI FM Radio Station</title>
-{% with messages = get_flashed_messages() %}
-  {% if messages %}
-    <ul class=flashes>
-    {% for message in messages %}
-      <li>{{ message }}</li>
-    {% endfor %}
-    </ul>
-  {% endif %}
-{% endwith %}
-{% block body %}{% endblock %}
+<html lang="en">
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
+    
+    <title>{% block title %}{% endblock %}</title>
+  </head>
+  <body>
+      <div class="container">
+        {% with messages = get_flashed_messages() %}
+            {% if messages %}
+            <div class="alert alert-primary" role="alert">
+            {% for message in messages %}
+                {{ message }}
+            {% endfor %}
+            </div>
+            {% endif %}
+        {% endwith %}
+        {% block body %}{% endblock %}
+    </div>
+  </body>
 </html>

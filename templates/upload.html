@@ -1,7 +1,16 @@
 {% extends "layout.html" %}
+{% block title %}
+FM Station - Upload
+{% endblock %}
 {% block body %}
-<form method=post enctype=multipart/form-data>
-    <input type=file name=audiofile>
-    <input type=submit value=Upload>
+<h1>Upload your own song</h1>
+<form method="post" enctype="multipart/form-data">
+    <div class="form-group">
+      <label for="file">Choose the file to upload (wav or mp3)</label>
+      <input type="file" class="form-control" id="audiofile" name="audiofile" accept=".wav, .mp3">
+    </div>
+    <button type="submit" class="btn btn-primary">Submit</button>
 </form>
 {% endblock %}
+
+

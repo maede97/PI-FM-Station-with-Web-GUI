@@ -1,3 +1,6 @@
 [submodule "fm_transmitter"]
 	path = fm_transmitter
 	url = https://github.com/markondej/fm_transmitter
+[submodule "bootstrap"]
+	path = bootstrap
+	url = https://github.com/twbs/bootstrap

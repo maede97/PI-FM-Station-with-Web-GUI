@@ -1,4 +1,4 @@
-from flask import Flask, request, redirect, flash, render_template, url_for
+from flask import Flask, request, redirect, flash, render_template, url_for, send_from_directory
 from werkzeug.utils import secure_filename
 import threading
 import os
@@ -27,10 +27,9 @@ def radio_player_func(stop):
             time.sleep(1)
 
         current = PLAY_QUEUE[0]
-        print("Playing", current)
         os.system(f"sudo fm_transmitter/fm_transmitter -f {HERTZ} '{UPLOADS_FOLDER_CONFIG}/{current}.wav'")
         PLAY_QUEUE = PLAY_QUEUE[1:]
-        os.remove(f"{UPLOADS_FOLDER_CONFIG}/{current}.*") # remove WAV and original
+        os.remove(f"{UPLOADS_FOLDER_CONFIG}/{current}.wav") # remove WAV
 
 app = Flask(__name__)
 
@@ -57,6 +56,10 @@ atexit.register(close_thread)
 def allowed_file(filename):
     return "." in filename and filename.rsplit(".", 1)[1].lower() in ALLOWED_EXTENSIONS
 
+@app.route('/css/<path:path>')
+def send_css(path):
+    return send_from_directory('bootstrap/dist/css', path)
+
 @app.route("/converting", methods=["GET"])
 def checking_file():
     global PLAY_QUEUE
@@ -74,6 +77,7 @@ def checking_file():
             # convert with ffmpeg
             if os.system(f"sudo sox '{UPLOADS_FOLDER_CONFIG}/{filename}' -r 22050 -c 1 -b 16 -t wav '{UPLOADS_FOLDER_CONFIG}/{filename_without_ext}.wav'") == 0:
                 PLAY_QUEUE.append(f"{filename_without_ext}")
+                os.remove(f"{UPLOADS_FOLDER_CONFIG}/{filename}")
                 return redirect(url_for("index_page"))
             else:
                 flash("An error occured")

@@ -7,7 +7,7 @@ echo "Prepares the FM transmitter..."
 git submodule update --init --recursive
 
 echo "Installing dependencies"
-sudo apt install -y gunicorn3 ffmpeg python3-pip
+sudo apt install -y gunicorn3 python3-pip sox libsox-fmt-all
 sudo pip3 install flask
 
 cd fm_transmitter

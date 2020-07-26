@@ -29,7 +29,7 @@ app = Flask(__name__)
 
 UPLOAD_FOLDER = os.path.join(os.path.dirname(os.path.abspath(__file__)), "uploads")
 
-ALLOWED_EXTENSIONS = {'mp3','wav','m4a'}
+ALLOWED_EXTENSIONS = {'mp3','wav', "m4a"}
 
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 app.config['MAX_CONTENT_LENGTH'] = 16 * 1024 * 1024 # max 16Mb
@@ -62,7 +62,7 @@ def checking_file():
             return redirect(url_for("index_page"))
         elif ext == "mp3" or ext == "m4a":
             # convert with ffmpeg
-            if os.system(f"ffmpeg -i 'uploads/{filename}' -bitexact -acodec pcm_s16le -ar 22050 -ac 1 'uploads/{filename_without_ext}.wav'") == 0:
+            if os.system(f"sudo sox 'uploads/{filename}' -r 22050 -c 1 -b 16 -t wav 'uploads/{filename_without_ext}.wav'") == 0:
                 PLAY_QUEUE.append(f"{filename_without_ext}.wav")
                 return redirect(url_for("index_page"))
             else:

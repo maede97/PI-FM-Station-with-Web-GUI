@@ -38,7 +38,7 @@ app.config['MAX_CONTENT_LENGTH'] = 16 * 1024 * 1024 # max 16Mb
 
 app.config["SECRET_KEY"] = os.environ.get('SECRET_KEY', 'dev')
 
-THREAD = threading.Thread(target=radio_player_func, args=(lambda: KILL_THREAD))
+THREAD = threading.Thread(target=radio_player_func, args=lambda: KILL_THREAD)
 
 THREAD.start()
 

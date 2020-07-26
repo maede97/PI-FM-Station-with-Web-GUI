@@ -6,7 +6,7 @@ import time
 import atexit
 
 PLAY_QUEUE = []
-HERTZ = "88.2"
+HERTZ = os.environ.get('HERTZ', '88.2')
 KILL_THREAD = False
 
 # Radio Player function

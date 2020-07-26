@@ -15,6 +15,7 @@ def radio_player_func(stop):
     global KILL_THREAD
 
     while True:
+        print("Starting loop")
         while len(PLAY_QUEUE) == 0:
             if stop():
                 return
@@ -24,6 +25,7 @@ def radio_player_func(stop):
         print("Playing", current)
         os.system(f"sudo fm_transmitter/fm_transmitter -f {HERTZ} 'uploads/{current}'")
         PLAY_QUEUE = PLAY_QUEUE[1:]
+        os.remove(f"uploads/{current}")
 
 app = Flask(__name__)
 
@@ -38,9 +40,12 @@ app.config["SECRET_KEY"] = os.environ.get('SECRET_KEY', 'dev')
 
 THREAD = threading.Thread(target=radio_player_func, args=(lambda: KILL_THREAD))
 
+THREAD.start()
+
 def close_thread():
     global KILL_THREAD
     KILL_THREAD = True
+    THREAD.join()
 
 atexit.register(close_thread)
 

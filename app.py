@@ -26,10 +26,13 @@ def radio_player_func(stop):
                 return
             time.sleep(1)
 
+        if stop():
+            return
+
         current = PLAY_QUEUE[0]
         os.system(f"sudo fm_transmitter/fm_transmitter -f {HERTZ} '{UPLOADS_FOLDER_CONFIG}/{current}.wav'")
         PLAY_QUEUE = PLAY_QUEUE[1:]
-        os.remove(f"{UPLOADS_FOLDER_CONFIG}/{current}.wav") # remove WAV
+        os.system(f"sudo rm -f '{UPLOADS_FOLDER_CONFIG}/{current}.wav'") # remove WAV
 
 app = Flask(__name__)
 
@@ -76,8 +79,8 @@ def checking_file():
         elif ext == "mp3" or ext == "m4a":
             # convert with ffmpeg
             if os.system(f"sudo sox '{UPLOADS_FOLDER_CONFIG}/{filename}' -r 22050 -c 1 -b 16 -t wav '{UPLOADS_FOLDER_CONFIG}/{filename_without_ext}.wav'") == 0:
-                PLAY_QUEUE.append(f"{filename_without_ext}")
-                os.remove(f"{UPLOADS_FOLDER_CONFIG}/{filename}")
+                PLAY_QUEUE.append(filename_without_ext)
+                os.system(f"sudo rm -f '{UPLOADS_FOLDER_CONFIG}/{filename}'")
                 return redirect(url_for("index_page"))
             else:
                 flash("An error occured")

@@ -3,10 +3,15 @@ from werkzeug.utils import secure_filename
 import threading
 import os
 import time
+import configparser
 import atexit
 
+config = configparser.ConfigParser()
+config.read("config.ini")
+
 PLAY_QUEUE = []
-HERTZ = os.environ.get('HERTZ', '88.2')
+HERTZ = float(config["DEFAULT"]["BroadcastFrequency"])
+UPLOADS_FOLDER_CONFIG = config["DEFAULT"]["UploadsFolder"]
 KILL_THREAD = False
 
 # Radio Player function
@@ -23,20 +28,20 @@ def radio_player_func(stop):
 
         current = PLAY_QUEUE[0]
         print("Playing", current)
-        os.system(f"sudo fm_transmitter/fm_transmitter -f {HERTZ} 'uploads/{current}.wav'")
+        os.system(f"sudo fm_transmitter/fm_transmitter -f {HERTZ} '{UPLOADS_FOLDER_CONFIG}/{current}.wav'")
         PLAY_QUEUE = PLAY_QUEUE[1:]
-        os.remove(f"uploads/{current}")
+        os.remove(f"{UPLOADS_FOLDER_CONFIG}/{current}.*") # remove WAV and original
 
 app = Flask(__name__)
 
-UPLOAD_FOLDER = os.path.join(os.path.dirname(os.path.abspath(__file__)), "uploads")
+UPLOAD_FOLDER = os.path.join(os.path.dirname(os.path.abspath(__file__)), UPLOADS_FOLDER_CONFIG)
 
-ALLOWED_EXTENSIONS = {'mp3','wav', "m4a"}
+ALLOWED_EXTENSIONS = {'mp3', 'wav'}
 
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 app.config['MAX_CONTENT_LENGTH'] = 16 * 1024 * 1024 # max 16Mb
 
-app.config["SECRET_KEY"] = os.environ.get('SECRET_KEY', 'dev')
+app.config["SECRET_KEY"] = config["DEFAULT"]["SecretKey"]
 
 # Radio Thread
 THREAD = threading.Thread(target=radio_player_func, args=(lambda: KILL_THREAD,))
@@ -67,7 +72,7 @@ def checking_file():
             return redirect(url_for("index_page"))
         elif ext == "mp3" or ext == "m4a":
             # convert with ffmpeg
-            if os.system(f"sudo sox 'uploads/{filename}' -r 22050 -c 1 -b 16 -t wav 'uploads/{filename_without_ext}.wav'") == 0:
+            if os.system(f"sudo sox '{UPLOADS_FOLDER_CONFIG}/{filename}' -r 22050 -c 1 -b 16 -t wav '{UPLOADS_FOLDER_CONFIG}/{filename_without_ext}.wav'") == 0:
                 PLAY_QUEUE.append(f"{filename_without_ext}")
                 return redirect(url_for("index_page"))
             else:

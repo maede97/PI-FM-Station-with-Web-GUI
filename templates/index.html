@@ -1,0 +1,12 @@
+{% extends "layout.html" %}
+{% block body %}
+  <h1>Overview</h1>
+  <p>Do you want to <a href="{{ url_for('upload_file') }}">upload an audio file?</a></p>
+
+  <p>Songs in Queue:</p>
+  <ul>
+  {% for q in queue %}
+    <li>{{ q }}</li>
+  {% endfor %}
+  </ul>
+{% endblock %}

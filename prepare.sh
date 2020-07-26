@@ -14,4 +14,7 @@ cd fm_transmitter
 make
 cd ..
 
+# Create upload directory for all files
+mkdir -f uploads
+
 echo "All set up. Start the app via ./run.sh"

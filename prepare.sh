@@ -15,6 +15,6 @@ make
 cd ..
 
 # Create upload directory for all files
-mkdir -f uploads
+mkdir -p uploads
 
 echo "All set up. Start the app via ./run.sh"

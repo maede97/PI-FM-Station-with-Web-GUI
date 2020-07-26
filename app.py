@@ -21,7 +21,8 @@ def radio_player_func(stop):
             time.sleep(1)
 
         current = PLAY_QUEUE[0]
-        os.system(f"sudo fm_transmitter/fm_transmitter -f {HERTZ} uploads/{current}")
+        print("Playing", current)
+        os.system(f"sudo fm_transmitter/fm_transmitter -f {HERTZ} 'uploads/{current}'")
         PLAY_QUEUE = PLAY_QUEUE[1:]
 
 app = Flask(__name__)
@@ -61,7 +62,7 @@ def checking_file():
             return redirect(url_for("index_page"))
         elif ext == "mp3" or ext == "m4a":
             # convert with ffmpeg
-            if os.system(f"ffmpeg -i uploads/{filename} {filename_without_ext}.wav") == 0:
+            if os.system(f"ffmpeg -i 'uploads/{filename}' -bitexact -acodec pcm_s16le -ar 22050 -ac 1 'uploads/{filename_without_ext}.wav'") == 0:
                 PLAY_QUEUE.append(f"{filename_without_ext}.wav")
                 return redirect(url_for("index_page"))
             else:
